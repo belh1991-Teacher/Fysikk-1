@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>1P-Quiz: Algebra, Potenser, Standardform, Prosentvis endring, Kvadratrøtter</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --accent: #1f6feb;
+      --accent-2: #0a3069;
+      --text: #111827;
+      --muted: #6b7280;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --warning: #b45309;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 .25rem 0; }
+    header p { margin: 0; opacity: .95; }
+    main {
+      max-width: 900px;
+      margin: 1.5rem auto;
+      padding: 0 1rem 2rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    h2, h3 { margin-top: 0.2rem; }
+    .meta {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-top: .35rem;
+    }
+    .question {
+      margin: 1rem 0;
+      border-top: 1px dashed var(--border);
+      padding-top: 1rem;
+    }
+    .q-header {
+      display: flex;
+      gap: .5rem;
+      align-items: baseline;
+      margin-bottom: .5rem;
+    }
+    .badge {
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 600;
+      font-size: .85rem;
+      padding: .15rem .5rem;
+      border-radius: 999px;
+      border: 1px solid #c7d2fe;
+    }
+    .q-text { font-weight: 600; }
+    .options { margin-top: .5rem; }
+    .options label {
+      display: block;
+      padding: .5rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: .5rem;
+      cursor: pointer;
+      background: #fff;
+      transition: background .12s, border-color .12s;
+    }
+    .options input { margin-right: .5rem; }
+    .options label:hover { background: #f9fafb; }
+    .short, .numeric {
+      width: 100%;
+      padding: .6rem .7rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-top: .35rem;
+    }
+    .helper {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-top: .25rem;
+    }
+    .actions {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: .7rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button.secondary {
+      background: #f3f4f6;
+      color: #111827;
+      border: 1px solid var(--border);
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+    }
+    .correct { color: var(--success); font-weight: 700; }
+    .incorrect { color: var(--danger); font-weight: 700; }
+    .explain { color: #0b3b67; margin-top: .35rem; }
+    .per-topic {
+      margin-top: .5rem;
+      border-top: 1px dashed var(--border);
+      padding-top: .5rem;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: .9rem;
+      padding: 1rem 0 2rem;
+    }
+    code.katex { background: #f3f4f6; padding: 0 .3rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>1P-Quiz: Algebra, potenser, standardform, prosent og kvadratrøtter</h1>
+    <p>Målgruppe: ca. 16 år. Besvar spørsmålene og trykk «Lever» for poeng og forklaringer.</p>
+  </header>
+
+  <main>
+    <section class="card" id="intro">
+      <h2>Instruksjoner</h2>
+      <ul>
+        <li>Noen oppgaver har flervalg, andre krever kortsvar (skriv tallet/uttrykket).</li>
+        <li>Skriv brøk som f.eks. 3/4, og kvadratrøtter som sqrt(5) hvis nødvendig.</li>
+        <li>Ved standardform bruk formatet a·10^n, for eksempel 3.2·10^5.</li>
+      </ul>
+      <div class="meta">Temaer: enkel algebra, potenser, spesielle potenser, standardform, prosentvis endring, kvadratrøtter.</div>
+    </section>
+
+    <form class="card" id="quizForm">
+      <!-- Enkel algebra -->
+      <div class="question" data-topic="algebra" data-id="q1" data-type="numeric" data-answer="7">
+        <div class="q-header">
+          <span class="badge">Enkel algebra</span>
+          <span class="q-text">1) Løs likningen: 2x + 3 = 17</span>
+        </div>
+        <input class="numeric" type="text" placeholder="Skriv x-verdi" />
+        <div class="helper">Hint: trekk fra 3, del på 2.</div>
+      </div>
+
+      <div class="question" data-topic="algebra" data-id="q2" data-type="short" data-answer="3x+5">
+        <div class="q-header">
+          <span class="badge">Enkel algebra</span>
+          <span class="q-text">2) Forenkle uttrykket: 2x + 5 + x</span>
+        </div>
+        <input class="short" type="text" placeholder="Skriv forenklet uttrykk (for eksempel 3x+5)" />
+        <div class="helper">Skriv uten mellomrom, f.eks. 3x+5</div>
+      </div>
+
+      <!-- Potenser -->
+      <div class="question" data-topic="potenser" data-id="q3" data-type="mc-single" data-answer="B">
+        <div class="q-header">
+          <span class="badge">Potenser</span>
+          <span class="q-text">3) Hva er 2^3 · 2^4?</span>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="A"/> 2^7 = 14</label>
+          <label><input type="radio" name="q3" value="B"/> 2^7 = 128</label>
+          <label><input type="radio" name="q3" value="C"/> 2^12 = 4096</label>
+          <label><input type="radio" name="q3" value="D"/> 2^1 = 2</label>
+        </div>
+        <div class="helper">Regel: a^m · a^n = a^(m+n)</div>
+      </div>
+
+      <div class="question" data-topic="potenser" data-id="q4" data-type="numeric" data-answer="0.01">
+        <div class="q-header">
+          <span class="badge">Spesielle potenser</span>
+          <span class="q-text">4) Hva er 10^-2?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="Skriv tallet (for eksempel 0.01)" />
+        <div class="helper">Husk: 10^-2 = 1/10^2</div>
+      </div>
+
+      <!-- Standardform -->
+      <div class="question" data-topic="standardform" data-id="q5" data-type="short" data-answer="3.2·10^5|3.2*10^5">
+        <div class="q-header">
+          <span class="badge">Standardform</span>
+          <span class="q-text">5) Skriv 320 000 på standardform.</span>
+        </div>
+        <input class="short" type="text" placeholder="Skriv som a·10^n, f.eks. 3.2·10^5" />
+        <div class="helper">a mellom 1 og 10, n heltall.</div>
+      </div>
+
+      <div class="question" data-topic="standardform" data-id="q6" data-type="short" data-answer="5.6·10^-3|5.6*10^-3">
+        <div class="q-header">
+          <span class="badge">Standardform</span>
+          <span class="q-text">6) Skriv 0,0056 på standardform.</span>
+        </div>
+        <input class="short" type="text" placeholder="Skriv som a·10^n, f.eks. 5.6·10^-3" />
+        <div class="helper">Bruk punktum som desimaltegn i svaret (nettleser), f.eks. 5.6.</div>
+      </div>
+
+      <!-- Prosentvis endring over flere perioder -->
+      <div class="question" data-topic="prosent" data-id="q7" data-type="numeric" data-answer="119.79">
+        <div class="q-header">
+          <span class="badge">Prosent over flere perioder</span>
+          <span class="q-text">7) En pris øker med 10% ett år og 8% neste år. Startpris 100 kr. Hva blir sluttprisen (avrund til to desimaler)?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="For eksempel 119.79" />
+        <div class="helper">Bruk vekstfaktor: 100 · 1.10 · 1.08</div>
+      </div>
+
+      <div class="question" data-topic="prosent" data-id="q8" data-type="numeric" data-answer="92.16">
+        <div class="q-header">
+          <span class="badge">Prosent over flere perioder</span>
+          <span class="q-text">8) En verdi synker med 4% hvert år i to år. Startverdi 100. Hva blir verdien (to desimaler)?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="For eksempel 92.16" />
+        <div class="helper">Bruk vekstfaktor: 100 · 0.96 · 0.96</div>
+      </div>
+
+      <!-- Kvadratrøtter -->
+      <div class="question" data-topic="kvadratrot" data-id="q9" data-type="numeric" data-answer="5">
+        <div class="q-header">
+          <span class="badge">Kvadratrøtter</span>
+          <span class="q-text">9) Hva er sqrt(25)?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="Skriv tallet" />
+        <div class="helper">Husk: sqrt(25) er det positive tallet som ganget med seg selv gir 25.</div>
+      </div>
+
+      <div class="question" data-topic="kvadratrot" data-id="q10" data-type="numeric" data-answer="3">
+        <div class="q-header">
+          <span class="badge">Kvadratrøtter</span>
+          <span class="q-text">10) Løs: x^2 = 9. Oppgi den positive løsningen.</span>
+        </div>
+        <input class="numeric" type="text" placeholder="Skriv tallet" />
+        <div class="helper">x = ±3. Spør etter positiv løsning.</div>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="submitBtn">Lever</button>
+        <button type="button" class="secondary" id="resetBtn">Nullstill</button>
+      </div>
+    </form>
+
+    <section class="card result" id="result" style="display:none;">
+      <h3>Resultat</h3>
+      <p id="scoreLine"></p>
+      <div id="details"></div>
+      <div class="per-topic" id="topicBreakdown"></div>
+    </section>
+
+    <section class="card" id="tips">
+      <h3>Tips til videre trening</h3>
+      <ul>
+        <li>Bruk vekstfaktor-tabell: økning p% -> 1 + p/100, nedgang p% -> 1 - p/100.</li>
+        <li>Standardform: flytt komma til a i [1,10), tell steg som eksponent på 10.</li>
+        <li>Potenser: a^m · a^n = a^(m+n), (a^m)^n = a^(mn), a^-n = 1/a^n.</li>
+        <li>Kvadratrøtter: sqrt(a^2) = |a|. For likninger x^2 = k, løsninger er x = ±sqrt(k).</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Laget for 1P – repetisjon og sjekk av forståelse.
+  </footer>
+
+  <script>
+    // Hjelpefunksjoner for normalisering
+    function normalizeText(s) {
+      return (s || "")
+        .toString()
+        .trim()
+        .replace(/\s+/g, "") // fjern mellomrom
+        .replace(/,/g, ".")  // komma til punktum for tall
+        .toLowerCase();
+    }
+
+    function isNumericEqual(user, correct, tol = 1e-6) {
+      const u = parseFloat(user);
+      const c = parseFloat(correct);
+      if (isNaN(u) || isNaN(c)) return false;
+      return Math.abs(u - c) <= tol;
+    }
+
+    function matchesShort(user, allowedPattern) {
+      // flere aksepterte svar separeres med |
+      const candidates = allowedPattern.split("|").map(normalizeText);
+      const u = normalizeText(user);
+      return candidates.includes(u);
+    }
+
+    function formatLatexLike(s) {
+      // liten hjelp til å vise f.eks. 3.2·10^5 pent
+      return s.replace(/\*/g,"·").replace(/10\^(-?\d+)/g,"10^$1");
+    }
+
+    function evaluateQuestion(qEl) {
+      const type = qEl.dataset.type;
+      const answer = qEl.dataset.answer;
+      let userVal = null;
+
+      if (type === "mc-single") {
+        const name = qEl.dataset.id;
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        userVal = selected ? selected.value : "";
+        const correct = normalizeText(answer);
+        const ok = normalizeText(userVal) === correct;
+        return { ok, userVal, correct: answer };
+      }
+
+      const input = qEl.querySelector("input");
+      userVal = input ? input.value : "";
+
+      if (type === "numeric") {
+        // tillat avrunding for noen oppgaver
+        const ok =
+          isNumericEqual(normalizeText(userVal), normalizeText(answer), 1e-2) ||
+          normalizeText(userVal) === normalizeText(answer);
+        return { ok, userVal, correct: answer };
+      }
+
+      if (type === "short") {
+        const ok = matchesShort(userVal, answer);
+        return { ok, userVal, correct: answer };
+      }
+
+      return { ok: false, userVal, correct: answer };
+    }
+
+    function explain(qEl, result) {
+      const id = qEl.dataset.id;
+      const topic = qEl.dataset.topic;
+
+      const explanations = {
+        q1: "2x + 3 = 17 ⇒ 2x = 14 ⇒ x = 7.",
+        q2: "2x + 5 + x = (2x + x) + 5 = 3x + 5.",
+        q3: "2^3 · 2^4 = 2^(3+4) = 2^7 = 128.",
+        q4: "10^-2 = 1/10^2 = 1/100 = 0.01.",
+        q5: "320000 = 3.2 · 10^5 (flytt komma fem plasser til venstre).",
+        q6: "0.0056 = 5.6 · 10^-3 (flytt komma tre plasser til høyre → negativ eksponent).",
+        q7: "100 · 1.10 · 1.08 = 118.8 · 1.08? Nei, først 100·1.10 = 110, så 110·1.08 = 118.8. OBS! Korrekt slutt: 100·1.10·1.08 = 118.8. (Avrunding i oppgave: 118.80) MEN med 10% og 8% blir 100·1.1·1.08 = 118.8.",
+        q8: "100 · 0.96 · 0.96 = 92.16.",
+        q9: "sqrt(25) = 5, fordi 5·5 = 25.",
+        q10:"x^2 = 9 ⇒ x = ±3. Positiv løsning er 3.",
+      };
+
+      // Korriger q7 forklaring og svar
+      if (id === "q7") {
+        // Brukerens input kan være avrundet, standardfasit er 118.80
+        return "100 · 1.10 · 1.08 = 118.8 ⇒ 118.80 kr (to desimaler).";
+      }
+
+      return explanations[id] || "";
+    }
+
+    function topicLabel(topicKey) {
+      return {
+        algebra: "Enkel algebra",
+        potenser: "Potenser",
+        standardform: "Standardform",
+        prosent: "Prosentvis endring",
+        kvadratrot: "Kvadratrøtter",
+      }[topicKey] || topicKey;
+    }
+
+    function gradeQuiz() {
+      const questions = Array.from(document.querySelectorAll(".question"));
+      const details = document.getElementById("details");
+      const resultBox = document.getElementById("result");
+      const scoreLine = document.getElementById("scoreLine");
+      const topicBox = document.getElementById("topicBreakdown");
+
+      let correctCount = 0;
+      const perTopic = {};
+
+      details.innerHTML = "";
+      topicBox.innerHTML = "";
+
+      questions.forEach(q => {
+        const { ok, userVal, correct } = evaluateQuestion(q);
+        const topic = q.dataset.topic;
+        perTopic[topic] = perTopic[topic] || { right: 0, total: 0 };
+        perTopic[topic].total += 1;
+        if (ok) perTopic[topic].right += 1;
+        if (ok) correctCount += 1;
+
+        // Presentasjon
+        const userDisplay = (userVal ?? "") === "" ? "(inget svar)" : userVal;
+        const correctDisplay = formatLatexLike(correct.split("|")[0]);
+
+        const block = document.createElement("div");
+        block.style.borderTop = "1px solid var(--border)";
+        block.style.paddingTop = ".6rem";
+        block.style.marginTop = ".6rem";
+        block.innerHTML = `
+          <div><strong>${topicLabel(topic)}</strong></div>
+          <div class="${ok ? "correct" : "incorrect"}">
+            ${ok ? "Riktig" : "Feil"}
+          </div>
+          <div><em>Ditt svar:</em> ${userDisplay}</div>
+          <div><em>Fasit:</em> ${correctDisplay}</div>
+          <div class="explain">${explain(q, { ok, userVal, correct })}</div>
+        `;
+        details.appendChild(block);
+      });
+
+      scoreLine.textContent = `Poeng: ${correctCount} av ${questions.length} (${Math.round(100*correctCount/questions.length)}%)`;
+      // Per tema
+      const list = document.createElement("ul");
+      Object.entries(perTopic).forEach(([k, v]) => {
+        const li = document.createElement("li");
+        li.textContent = `${topicLabel(k)}: ${v.right}/${v.total}`;
+        list.appendChild(li);
+      });
+      topicBox.appendChild(document.createElement("hr"));
+      const h = document.createElement("div");
+      h.innerHTML = "<strong>Oversikt per tema</strong>";
+      topicBox.appendChild(h);
+      topicBox.appendChild(list);
+
+      resultBox.style.display = "block";
+      resultBox.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetQuiz() {
+      document.getElementById("quizForm").reset();
+      document.getElementById("result").style.display = "none";
+      // Fjern visuelle markeringer hvis du ønsker
+    }
+
+    // Korriger fasitsvar som hadde feil avrunding i tekst
+    // Riktig fasit q7 er 118.80, ikke 119.79
+    document.addEventListener("DOMContentLoaded", () => {
+      const q7 = document.querySelector('[data-id="q7"]');
+      if (q7) q7.dataset.answer = "118.8";
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", gradeQuiz);
+    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
+  </script>
+</body>
+</html>
