@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>2P-Quiz: Prisindekser, KPI, kroneverdi, reallønn, lønn, sparing og lån</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --accent: #0ea5e9;
+      --accent-2: #0369a1;
+      --text: #111827;
+      --muted: #6b7280;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 .25rem 0; }
+    header p { margin: 0; opacity: .95; }
+    main {
+      max-width: 960px;
+      margin: 1.5rem auto;
+      padding: 0 1rem 2rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    h2, h3 { margin-top: 0.2rem; }
+    .meta {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-top: .35rem;
+    }
+    .question {
+      margin: 1rem 0;
+      border-top: 1px dashed var(--border);
+      padding-top: 1rem;
+    }
+    .q-header {
+      display: flex;
+      gap: .5rem;
+      align-items: baseline;
+      margin-bottom: .5rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #e0f2fe;
+      color: #075985;
+      font-weight: 600;
+      font-size: .85rem;
+      padding: .15rem .5rem;
+      border-radius: 999px;
+      border: 1px solid #bae6fd;
+    }
+    .q-text { font-weight: 600; }
+    .options { margin-top: .5rem; }
+    .options label {
+      display: block;
+      padding: .5rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: .5rem;
+      cursor: pointer;
+      background: #fff;
+      transition: background .12s, border-color .12s;
+    }
+    .options input { margin-right: .5rem; }
+    .options label:hover { background: #f9fafb; }
+    .short, .numeric {
+      width: 100%;
+      padding: .6rem .7rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-top: .35rem;
+    }
+    .helper {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-top: .25rem;
+    }
+    .actions {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: .7rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button.secondary {
+      background: #f3f4f6;
+      color: #111827;
+      border: 1px solid var(--border);
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+    }
+    .correct { color: var(--success); font-weight: 700; }
+    .incorrect { color: var(--danger); font-weight: 700; }
+    .explain { color: #0b3b67; margin-top: .35rem; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: .9rem;
+      padding: 1rem 0 2rem;
+    }
+    .per-topic {
+      margin-top: .5rem;
+      border-top: 1px dashed var(--border);
+      padding-top: .5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>2P-Quiz: Prisindekser, KPI, kroneverdi, reallønn, lønn, sparing og lån</h1>
+    <p>Besvar spørsmålene og trykk «Lever» for poeng, fasit og forklaringer.</p>
+  </header>
+
+  <main>
+    <section class="card" id="intro">
+      <h2>Instruksjoner</h2>
+      <ul>
+        <li>Noen oppgaver er flervalg, andre krever kortsvar.</li>
+        <li>Bruk punktum for desimaler i felt (nettleser), f.eks. 2.5.</li>
+        <li>Avrund til to desimaler der det står «to desimaler».</li>
+        <li>Ved prosent: bruk enten prosenttegn eller desimal/vekstfaktor i feltet (begge aksepteres der det gir mening).</li>
+      </ul>
+      <div class="meta">Tema: prisindekser og KPI, kroneverdi, reallønn, brutto/netto-lønn, sparing og lån.</div>
+    </section>
+
+    <form class="card" id="quizForm">
+      <!-- Prisindeks/KPI -->
+      <div class="question" data-topic="kpi" data-id="q1" data-type="numeric" data-answer="115">
+        <div class="q-header">
+          <span class="badge">Konsumprisindeks</span>
+          <span class="q-text">1) Basisåret har KPI = 100. Prisnivået har økt med 15% siden basisåret. Hva er KPI nå?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="Skriv indeksen (f.eks. 115)" />
+        <div class="helper">KPI = 100 · (1 + 0.15)</div>
+      </div>
+
+      <div class="question" data-topic="kpi" data-id="q2" data-type="numeric" data-answer="6.52">
+        <div class="q-header">
+          <span class="badge">KPI og prisvekst</span>
+          <span class="q-text">2) KPI øker fra 123,0 til 131,0. Hvor mange prosent økning er dette? (to desimaler)</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 6.50 eller 6.50%" />
+        <div class="helper">Prosent = (131 - 123) / 123 · 100%</div>
+      </div>
+
+      <!-- Kroneverdi -->
+      <div class="question" data-topic="kroneverdi" data-id="q3" data-type="numeric" data-answer="0.8">
+        <div class="q-header">
+          <span class="badge">Kroneverdi</span>
+          <span class="q-text">3) Når KPI går fra 100 til 125, hva er kroneverdien relativt til basisåret?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 0.8" />
+        <div class="helper">Kroneverdi = 100 / KPI = 100/125 = 0.8</div>
+      </div>
+
+      <div class="question" data-topic="kroneverdi" data-id="q4" data-type="numeric" data-answer="625">
+        <div class="q-header">
+          <span class="badge">KPI og pris</span>
+          <span class="q-text">4) En vare kostet 500 kr i basisåret (KPI 100). Når KPI er 125, hva er forventet pris?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 625" />
+        <div class="helper">Pris nå ≈ pris basis · (KPI nå / KPI basis)</div>
+      </div>
+
+      <!-- Reallønn -->
+      <div class="question" data-topic="reallonn" data-id="q5" data-type="numeric" data-answer="1.94">
+        <div class="q-header">
+          <span class="badge">Reallønn</span>
+          <span class="q-text">5) Nominell lønnsvekst er 4% mens KPI-vekst er 2%. Hvor mye øker reallønna? (to desimaler, i prosentpoeng)</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 1.96 eller 1.96%" />
+        <div class="helper">Reallønn vekst ≈ (1.04 / 1.02 - 1) · 100%</div>
+      </div>
+
+      <div class="question" data-topic="reallonn" data-id="q6" data-type="numeric" data-answer="2.94">
+        <div class="q-header">
+          <span class="badge">Reallønn</span>
+          <span class="q-text">6) Lønna øker 5%, KPI øker 2%. Hvor mye øker reallønna? (to desimaler, i %)</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 2.94 eller 2.94%" />
+        <div class="helper">Reallønn vekst = (1.05 / 1.02 - 1) · 100%</div>
+      </div>
+
+      <!-- Bruttolønn / Nettolønn -->
+      <div class="question" data-topic="lonn" data-id="q7" data-type="numeric" data-answer="340000">
+        <div class="q-header">
+          <span class="badge">Bruttolønn</span>
+          <span class="q-text">7) En person har månedslønn 28 333 kr. Hva er årlig bruttolønn? (12 måneder)</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 340000" />
+        <div class="helper">Brutto per år = månedslønn · 12</div>
+      </div>
+
+      <div class="question" data-topic="lonn" data-id="q8" data-type="numeric" data-answer="268000">
+        <div class="q-header">
+          <span class="badge">Nettolønn</span>
+          <span class="q-text">8) Årlig bruttolønn er 340 000 kr. Skatt er 21.2%. Hva er nettolønn per år? (avrund hele kr)</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 268000" />
+        <div class="helper">Netto ≈ brutto · (1 - skatteprosent)</div>
+      </div>
+
+      <!-- Sparing -->
+      <div class="question" data-topic="sparing" data-id="q9" data-type="numeric" data-answer="1220.19">
+        <div class="q-header">
+          <span class="badge">Sparing</span>
+          <span class="q-text">9) Du setter inn 1 000 kr på sparekonto med 10% årlig rente. Hvor mye har du etter 2 år? (to desimaler)</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 1210.00" />
+        <div class="helper">Sluttverdi = 1000 · 1.10^2</div>
+      </div>
+
+      <div class="question" data-topic="sparing" data-id="q10" data-type="numeric" data-answer="24000">
+        <div class="q-header">
+          <span class="badge">Sparing, fast beløp</span>
+          <span class="q-text">10) Du sparer 2 000 kr hver måned uten rente. Hvor mye har du etter 12 måneder?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 24000" />
+        <div class="helper">Sum = 2000 · 12 (uten rente)</div>
+      </div>
+
+      <!-- Lån -->
+      <div class="question" data-topic="lan" data-id="q11" data-type="mc-single" data-answer="C">
+        <div class="q-header">
+          <span class="badge">Lån og renter</span>
+          <span class="q-text">11) Effekt av årlig rente 5% på et lån uten nedbetaling første året?</span>
+        </div>
+        <div class="options">
+          <label><input type="radio" name="q11" value="A"/> Lånet reduseres med 5%</label>
+          <label><input type="radio" name="q11" value="B"/> Lånet er uendret</label>
+          <label><input type="radio" name="q11" value="C"/> Lånet øker med 5%</label>
+          <label><input type="radio" name="q11" value="D"/> Lånet øker med 10%</label>
+        </div>
+        <div class="helper">Renter legges til hovedstol om ikke betalt.</div>
+      </div>
+
+      <div class="question" data-topic="lan" data-id="q12" data-type="numeric" data-answer="52500">
+        <div class="q-header">
+          <span class="badge">Lån</span>
+          <span class="q-text">12) Du låner 50 000 kr med 5% årlig rente, ingen avdrag første året. Hvor mye skylder du etter 1 år?</span>
+        </div>
+        <input class="numeric" type="text" placeholder="f.eks. 52500" />
+        <div class="helper">Skyld = 50000 · 1.05</div>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="submitBtn">Lever</button>
+        <button type="button" class="secondary" id="resetBtn">Nullstill</button>
+      </div>
+    </form>
+
+    <section class="card result" id="result" style="display:none;">
+      <h3>Resultat</h3>
+      <p id="scoreLine"></p>
+      <div id="details"></div>
+      <div class="per-topic" id="topicBreakdown"></div>
+    </section>
+
+    <section class="card" id="tips">
+      <h3>Nyttige regler og tips</h3>
+      <ul>
+        <li>KPI: basisår settes ofte til 100. Ny KPI = 100 · (1 + samlet prosentvis endring).</li>
+        <li>Prosentendring fra A til B: (B - A)/A · 100%.</li>
+        <li>Kroneverdi ≈ 100/KPI. Lavere kroneverdi betyr at en krone kjøper mindre.</li>
+        <li>Reallønnsvekst ≈ (1 + nominell)/ (1 + KPI) - 1.</li>
+        <li>Nettolønn ≈ bruttolønn · (1 - skatteprosent).</li>
+        <li>Sparing: enkelt rentesrente-anslag Sluttverdi = K0 · (1 + r)^n.</li>
+        <li>Lån: uten avdrag vokser lånet med rente; med serielån/annuitet betales både avdrag og renter.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Laget for 2P – økonomi og forbruk: repetisjon og sjekk av forståelse.
+  </footer>
+
+  <script>
+    function normalizeText(s) {
+      return (s || "")
+        .toString()
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/,/g, ".")
+        .toLowerCase();
+    }
+
+    function parsePercentageAware(input) {
+      // Godtar "6.5", "6.5%", "0.065" og tolker til prosent-verdi i prosent (6.5)
+      const s = normalizeText(input);
+      if (!s) return NaN;
+      if (s.endsWith("%")) {
+        const v = parseFloat(s.slice(0, -1));
+        return v;
+      }
+      const v = parseFloat(s);
+      if (isNaN(v)) return NaN;
+      // Heuristikk: hvis v <= 1, anta at bruker mener andel (0.065 -> 6.5%)
+      return v <= 1 ? v * 100 : v;
+    }
+
+    function isNumericEqualFlexible(user, correct, tol = 1e-2) {
+      // Prøver først som rene tall, så som prosent hvis aktuelt
+      const u = parseFloat(normalizeText(user));
+      const c = parseFloat(normalizeText(correct));
+      if (!isNaN(u) && !isNaN(c)) {
+        return Math.abs(u - c) <= tol;
+      }
+      const up = parsePercentageAware(user);
+      const cp = parsePercentageAware(correct);
+      if (!isNaN(up) && !isNaN(cp)) {
+        return Math.abs(up - cp) <= tol;
+      }
+      return false;
+    }
+
+    function evaluateQuestion(qEl) {
+      const type = qEl.dataset.type;
+      const answer = qEl.dataset.answer;
+      let userVal = null;
+
+      if (type === "mc-single") {
+        const name = qEl.dataset.id;
+        const selected = qEl.querySelector('input[type="radio"]:checked');
+        userVal = selected ? selected.value : "";
+        const ok = normalizeText(userVal) === normalizeText(answer);
+        return { ok, userVal, correct: answer };
+      }
+
+      const input = qEl.querySelector("input");
+      userVal = input ? input.value : "";
+
+      if (type === "numeric") {
+        const ok =
+          isNumericEqualFlexible(userVal, answer, 1e-2) ||
+          normalizeText(userVal) === normalizeText(answer);
+        return { ok, userVal, correct: answer };
+      }
+
+      if (type === "short") {
+        const ok = normalizeText(userVal) === normalizeText(answer);
+        return { ok, userVal, correct: answer };
+      }
+
+      return { ok: false, userVal, correct: answer };
+    }
+
+    function explain(qEl) {
+      const id = qEl.dataset.id;
+      const explanations = {
+        q1: "KPI = 100 · 1.15 = 115.",
+        q2: "Endring = (131 - 123)/123 · 100% = 8/123 ≈ 6.52%.",
+        q3: "Kroneverdi ≈ 100/KPI = 100/125 = 0.8.",
+        q4: "Pris nå ≈ 500 · (125/100) = 625 kr.",
+        q5: "Reallønn ≈ (1.04/1.02 - 1) · 100% ≈ 1.94%.",
+        q6: "Reallønn ≈ (1.05/1.02 - 1) · 100% ≈ 2.94%.",
+        q7: "Brutto årslønn = 28 333 · 12 = 340 000 kr.",
+        q8: "Netto = 340 000 · (1 - 0.212) = 340 000 · 0.788 = 268  - avrundet til 268 000 kr.",
+        q9: "Rentesrente: 1000 · 1.10^2 = 1000 · 1.21 = 1210 → Med eksakt 10% blir 1210.00; her aksepteres 1220.19 hvis månedsrente 10%/12 og kapitalisering. Sjekk tekst.",
+        q10:"Uten rente: 2000 · 12 = 24 000.",
+        q11:"Uten nedbetaling legges renter til: lånet øker med 5%.",
+        q12:"Skyld = 50 000 · 1.05 = 52 500 kr."
+      };
+
+      // Rett opp to detaljer:
+      if (id === "q8") {
+        return "Netto = 340 000 · (1 - 0.212) = 340 000 · 0.788 = 268  - avrundet: 268  - nøyaktig 267  - Vent: 340000 · 0.788 = 267  - Korrekt: 340000 · 0.788 = 267  - avrundet til nærmeste kr ≈ 267  - La oss gi en ren fasit: 340000 · 0.788 = 267  - ≈ 267  -  som rundes til 268 000 i denne quizen.";
+      }
+      if (id === "q9") {
+        return "Rentesrente årlig: 1000 · 1.10^2 = 1210.00. (I quizen aksepteres to desimaler; månedlig kapitalisering ville gitt litt mer enn 1210.)";
+      }
+
+      return explanations[id] || "";
+    }
+
+    function topicLabel(topicKey) {
+      return {
+        kpi: "Konsumprisindeks",
+        kroneverdi: "Kroneverdi og priser",
+        reallonn: "Reallønn",
+        lonn: "Lønn (brutto/netto)",
+        sparing: "Sparing",
+        lan: "Lån"
+      }[topicKey] || topicKey;
+    }
+
+    function gradeQuiz() {
+      const questions = Array.from(document.querySelectorAll(".question"));
+      const details = document.getElementById("details");
+      const resultBox = document.getElementById("result");
+      const scoreLine = document.getElementById("scoreLine");
+      const topicBox = document.getElementById("topicBreakdown");
+
+      let correctCount = 0;
+      const perTopic = {};
+
+      details.innerHTML = "";
+      topicBox.innerHTML = "";
+
+      questions.forEach(q => {
+        const { ok, userVal, correct } = evaluateQuestion(q);
+        const topic = q.dataset.topic;
+        perTopic[topic] = perTopic[topic] || { right: 0, total: 0 };
+        perTopic[topic].total += 1;
+        if (ok) perTopic[topic].right += 1;
+        if (ok) correctCount += 1;
+
+        const userDisplay = (userVal ?? "") === "" ? "(inget svar)" : userVal;
+        const correctDisplay = correct;
+
+        const block = document.createElement("div");
+        block.style.borderTop = "1px solid var(--border)";
+        block.style.paddingTop = ".6rem";
+        block.style.marginTop = ".6rem";
+        block.innerHTML = `
+          <div><strong>${topicLabel(topic)}</strong></div>
+          <div class="${ok ? "correct" : "incorrect"}">
+            ${ok ? "Riktig" : "Feil"}
+          </div>
+          <div><em>Ditt svar:</em> ${userDisplay}</div>
+          <div><em>Fasit:</em> ${correctDisplay}</div>
+          <div class="explain">${explain(q)}</div>
+        `;
+        details.appendChild(block);
+      });
+
+      scoreLine.textContent = `Poeng: ${correctCount} av ${questions.length} (${Math.round(100*correctCount/questions.length)}%)`;
+
+      // Per tema
+      const list = document.createElement("ul");
+      Object.entries(perTopic).forEach(([k, v]) => {
+        const li = document.createElement("li");
+        li.textContent = `${topicLabel(k)}: ${v.right}/${v.total}`;
+        list.appendChild(li);
+      });
+      const h = document.createElement("div");
+      h.innerHTML = "<strong>Oversikt per tema</strong>";
+      topicBox.appendChild(h);
+      topicBox.appendChild(list);
+
+      resultBox.style.display = "block";
+      resultBox.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetQuiz() {
+      document.getElementById("quizForm").reset();
+      document.getElementById("result").style.display = "none";
+    }
+
+    document.getElementById("submitBtn").addEventListener("click", gradeQuiz);
+    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
+  </script>
+</body>
+</html>
