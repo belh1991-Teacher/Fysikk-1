@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="no">
 <head>
   <meta charset="UTF-8" />
@@ -15,13 +16,13 @@
     figure { margin: 0; }
     img { max-width: 100%; height: auto; border-radius: 8px; }
     figcaption { color: #555; margin-top: 8px; }
-    .hint { color: #666; font-size: 0.95rem; }
+    .hint { color: #666; font-size: 0.95rem; margin-top: 8px; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Dagens meme</h1>
-    <!-- Passordseksjon -->
+
     <div id="login">
       <label for="password">Passord:</label>
       <div class="password-box">
@@ -31,18 +32,17 @@
       <div id="error" class="error hidden">Feil passord.</div>
     </div>
 
-    <!-- Innhold: vises kun ved riktig passord -->
     <div id="content" class="hidden">
       <figure>
-        <!-- Bildet settes automatisk nedenfor via JS -->
-        <img id="memeImg" src="svampebob.png" alt="Dagens meme">
+        <img id="memeImg" src="" alt="Dagens meme">
         <figcaption id="caption">Dagens meme – <span id="dateText"></span></figcaption>
+        <p id="imgHint" class="hint hidden"></p>
       </figure>
     </div>
   </div>
 
   <script>
-    // Formaterer dagens dato som dd.mm.yyyy (norsk standard)
+    // Datoformat dd.mm.yyyy
     function formatDateNo(d) {
       const dd = String(d.getDate()).padStart(2, '0');
       const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -50,46 +50,47 @@
       return `${dd}.${mm}.${yyyy}`;
     }
 
-    // Hent dagens dato og passord
+    // Dagens dato/passord
     const today = new Date();
     const todayPassword = formatDateNo(today);
-
-    // Oppdater bildetekst med dagens dato
     document.getElementById('dateText').textContent = todayPassword;
 
-    // Sett daglig-deterministisk tilfeldig bilde
-    // Liste over tilgjengelige bilder (legg filene i samme mappe eller angi full sti)
-    const memeBilder = [
-      'meme/svampebob.png',
-      'meme/meme.png',
-      'meme/meme1.png',
-      'meme/meme2.png',
-      'meme/meme3.png',
-      'meme/meme4.png',
-      'meme/meme5.png',
-      'meme/meme6.png',
-      'meme/meme7.png',
-      'meme/meme8.png',
-      'meme/meme67.png'
-    ];
+  // Liste over bilder i samme mappe som HTML-filen
+  const memeBilder = [
+    'svampebob.png',
+    'meme.png',
+    'meme1.png',
+    'meme2.png',
+    'meme3.png',
+    'meme4.png',
+    'meme5.png',
+    'meme6.png',
+    'meme7.png',
+    'meme8.png',
+    'meme67.png'
+  ];
 
-    // Enkel “hash” av dagens dato for å få et stabilt daglig valg
-    function dailyIndexFromDate(d, length) {
-      const dd = d.getDate();
-      const mm = d.getMonth() + 1;
-      const yyyy = d.getFullYear();
-      // Lag et tall basert på yyyy,mm,dd
-      const seed = yyyy * 10000 + mm * 100 + dd;
-      // En liten blanding for bedre spredning
-      const mixed = (seed ^ 0x9e3779b9) * 2654435761 % 4294967296;
-      return mixed % length;
-    }
+  function dailyIndexFromDate(d, length) {
+    const dd = d.getDate();
+    const mm = d.getMonth() + 1;
+    const yyyy = d.getFullYear();
+    const seed = yyyy * 10000 + mm * 100 + dd;
+    const mixed = (seed ^ 0x9e3779b9) * 2654435761 % 4294967296;
+    return mixed % length;
+  }
 
-    const idx = dailyIndexFromDate(today, memeBilder.length);
-    const valgtBilde = memeBilder[idx];
-    document.getElementById('memeImg').src = valgtBilde;
+  const idx = dailyIndexFromDate(new Date(), memeBilder.length);
+  const valgtBilde = memeBilder[idx];
 
-    // Enkel innlogging
+  const imgEl = document.getElementById('memeImg');
+  imgEl.onerror = function () {
+    console.warn('Fant ikke bildet:', valgtBilde, '- sjekk filnavn og plassering.');
+    this.onerror = null;
+    this.src = 'svampebob.png'; // fallback som også ligger i samme mappe
+  };
+  imgEl.src = valgtBilde;
+    
+    // Innlogging
     const passwordInput = document.getElementById('password');
     const openBtn = document.getElementById('openBtn');
     const errorBox = document.getElementById('error');
@@ -110,12 +111,6 @@
     passwordInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') tryOpen();
     });
-
-    // Valgfritt: automatisk filnavn for dagens meme
-    // Hvis du lagrer dagens bilde som /memes/yyyymmdd.png,
-    // kan du automatisk sette kilde slik:
-    // const yyyymmdd = todayPassword.split('.').reverse().join(''); // yyyy mm dd -> yyyymmdd
-    // document.getElementById('memeImg').src = `/memes/${yyyymmdd}.png`;
   </script>
 </body>
 </html>
