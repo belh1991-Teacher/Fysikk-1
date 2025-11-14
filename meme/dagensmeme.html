@@ -90,17 +90,17 @@
     <h1>Dagens meme</h1>
     <label for="password">Passord (dd.mm.yyyy):</label>
     <div class="password-box">
-      <input type="password" id="password" placeholder="f.eks. 14.11.2025" autocomplete="off" />
+      <input type="password" id="password" placeholder="Skriv inn passordet" autocomplete="off" />
       <button id="openBtn">Åpne</button>
     </div>
-    <div id="error" class="error hidden">Feil passord. Bruk format dd.mm.yyyy.</div>
+    <div id="error" class="error hidden">Feil passord. Prøv på nytt.</div>
   </div>
 
   <!-- Etter innlogging viser vi bildet i en sentrert “stage” -->
   <div id="content" class="stage hidden">
     <div class="container">
       <figure>
-        <img id="memeImg" src="" alt="Dagens meme">
+        <img id="memeImg" src="dwight1" alt="Dagens meme">
         <figcaption>Dagens meme – <span id="dateText"></span></figcaption>
         <p id="imgHint" class="hint hidden"></p>
       </figure>
@@ -131,6 +131,7 @@
     'meme6.png',
     'meme7.png',
     'meme8.png',
+    'meme67.png',
     'svampebob.png', // kan også fungere som fallback
   ];
 
