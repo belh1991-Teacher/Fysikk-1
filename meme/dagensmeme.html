@@ -17,20 +17,22 @@
     img { max-width: 100%; height: auto; border-radius: 8px; }
     figcaption { color: #555; margin-top: 8px; }
     .hint { color: #666; font-size: 0.95rem; margin-top: 8px; }
+    #login, #content { max-width: 720px; margin: 40px auto; }
   </style>
 </head>
 <body>
 
-<div id="login">
-  <label for="password">Passord:</label>
+<div id="login" class="container">
+  <h1>Dagens meme</h1>
+  <label for="password">Passord (dd.mm.yyyy):</label>
   <div class="password-box">
-    <input type="password" id="password" placeholder="Passord" autocomplete="off" />
+    <input type="password" id="password" placeholder="f.eks. 14.11.2025" autocomplete="off" />
     <button id="openBtn">Åpne</button>
   </div>
-  <div id="error" class="error hidden">Feil passord.</div>
+  <div id="error" class="error hidden">Feil passord. Bruk format dd.mm.yyyy.</div>
 </div>
 
-<div id="content" class="hidden">
+<div id="content" class="container hidden">
   <figure>
     <img id="memeImg" src="" alt="Dagens meme">
     <figcaption id="caption">Dagens meme – <span id="dateText"></span></figcaption>
@@ -38,19 +40,18 @@
   </figure>
 </div>  
   
-  <script>
-    // Datoformat dd.mm.yyyy
-    function formatDateNo(d) {
-      const dd = String(d.getDate()).padStart(2, '0');
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const yyyy = d.getFullYear();
-      return `${dd}.${mm}.${yyyy}`;
-    }
+<script>
+  // Hjelpefunksjon: datoformat dd.mm.yyyy
+  function formatDateNo(d) {
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}.${mm}.${yyyy}`;
+  }
 
-    // Dagens dato/passord
-    const today = new Date();
-    const todayPassword = formatDateNo(today);
-    document.getElementById('dateText').textContent = todayPassword;
+  // Dagens dato/passord
+  const today = new Date();
+  const todayPassword = formatDateNo(today);
 
   // Liste over bilder i samme mappe som HTML-filen
   const memeBilder = [
@@ -67,7 +68,7 @@
     'meme67.png'
   ];
 
-  // Hash av en streng (f.eks. "dd.mm.yyyy") → heltall
+  // Enkel hash av streng → ikke-kryptografisk, men deterministisk
   function hashString(str) {
     let h = 0;
     for (let i = 0; i < str.length; i++) {
@@ -77,48 +78,61 @@
     return Math.abs(h);
   }
 
+  // Finn indeks for gitt dato
   function dailyIndexFromDate(d, length) {
     const key = formatDateNo(d); // "dd.mm.yyyy"
     const h = hashString(key);
     return h % length;
   }
 
-  const idx = dailyIndexFromDate(new Date(), memeBilder.length);
-  const valgtBilde = memeBilder[idx];
-  imgEl.src = valgtBilde;
-
-  const idx = dailyIndexFromDate(new Date(), memeBilder.length);
-  const valgtBilde = memeBilder[idx];
-
+  // DOM-elementer
+  const passwordInput = document.getElementById('password');
+  const openBtn = document.getElementById('openBtn');
+  const errorBox = document.getElementById('error');
+  const content = document.getElementById('content');
+  const loginBox = document.getElementById('login');
   const imgEl = document.getElementById('memeImg');
-  imgEl.onerror = function () {
-    console.warn('Fant ikke bildet:', valgtBilde, '- sjekk filnavn og plassering.');
-    this.onerror = null;
-    this.src = 'svampebob.png'; // fallback som også ligger i samme mappe
-  };
-  imgEl.src = valgtBilde;
-    
-    // Innlogging
-    const passwordInput = document.getElementById('password');
-    const openBtn = document.getElementById('openBtn');
-    const errorBox = document.getElementById('error');
-    const content = document.getElementById('content');
+  const dateText = document.getElementById('dateText');
+  const imgHint = document.getElementById('imgHint');
 
-    function tryOpen() {
-      const input = passwordInput.value.trim();
-      if (input === todayPassword) {
-        content.classList.remove('hidden');
-        document.getElementById('login').classList.add('hidden');
-      } else {
-        errorBox.classList.remove('hidden');
-        setTimeout(() => errorBox.classList.add('hidden'), 2500);
-      }
+  // Viser innhold etter korrekt passord
+  function showDailyMeme() {
+    // Sett dato i bildetekst
+    dateText.textContent = todayPassword;
+
+    // Velg bilde for dagens dato
+    const idx = dailyIndexFromDate(today, memeBilder.length);
+    const valgtBilde = memeBilder[idx];
+
+    // Sett fallback hvis bildet mangler
+    imgEl.onerror = function () {
+      console.warn('Fant ikke bildet:', valgtBilde, '- sjekk filnavn og plassering.');
+      this.onerror = null;
+      this.src = 'svampebob.png'; // fallback
+      imgHint.textContent = 'Kunne ikke laste valgt bilde i dag. Viser fallback.';
+      imgHint.classList.remove('hidden');
+    };
+
+    imgEl.src = valgtBilde;
+  }
+
+  // Innlogging
+  function tryOpen() {
+    const input = passwordInput.value.trim();
+    if (input === todayPassword) {
+      content.classList.remove('hidden');
+      loginBox.classList.add('hidden');
+      showDailyMeme();
+    } else {
+      errorBox.classList.remove('hidden');
+      setTimeout(() => errorBox.classList.add('hidden'), 2500);
     }
+  }
 
-    openBtn.addEventListener('click', tryOpen);
-    passwordInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') tryOpen();
-    });
-  </script>
+  openBtn.addEventListener('click', tryOpen);
+  passwordInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') tryOpen();
+  });
+</script>
 </body>
 </html>
