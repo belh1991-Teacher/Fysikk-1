@@ -20,27 +20,24 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Dagens meme</h1>
 
-    <div id="login">
-      <label for="password">Passord:</label>
-      <div class="password-box">
-        <input type="password" id="password" placeholder="Passord" autocomplete="off" />
-        <button id="openBtn">Åpne</button>
-      </div>
-      <div id="error" class="error hidden">Feil passord.</div>
-    </div>
-
-    <div id="content" class="hidden">
-      <figure>
-        <img id="memeImg" src="" alt="Dagens meme">
-        <figcaption id="caption">Dagens meme – <span id="dateText"></span></figcaption>
-        <p id="imgHint" class="hint hidden"></p>
-      </figure>
-    </div>
+<div id="login">
+  <label for="password">Passord:</label>
+  <div class="password-box">
+    <input type="password" id="password" placeholder="Passord" autocomplete="off" />
+    <button id="openBtn">Åpne</button>
   </div>
+  <div id="error" class="error hidden">Feil passord.</div>
+</div>
 
+<div id="content" class="hidden">
+  <figure>
+    <img id="memeImg" src="" alt="Dagens meme">
+    <figcaption id="caption">Dagens meme – <span id="dateText"></span></figcaption>
+    <p id="imgHint" class="hint hidden"></p>
+  </figure>
+</div>  
+  
   <script>
     // Datoformat dd.mm.yyyy
     function formatDateNo(d) {
